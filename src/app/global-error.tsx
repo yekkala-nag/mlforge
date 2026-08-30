@@ -1,18 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default function GlobalError({
   error,
@@ -26,11 +15,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-    >
-      <body className="min-h-full flex items-center justify-center bg-zinc-950 text-white p-6">
+    <html lang="en" className="h-full antialiased dark">
+      <body className="min-h-full flex items-center justify-center bg-zinc-950 text-white p-6 font-sans">
         <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center space-y-4 shadow-xl">
           <h2 className="text-xl font-bold text-zinc-100">Critical Error</h2>
           <p className="text-sm text-zinc-400">
