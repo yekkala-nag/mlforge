@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular,
+    "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --color-sidebar-ring: oklch(0.708 0 0);
+  --color-sidebar-border: oklch(0.217 0 0);
+  --color-sidebar-accent-foreground: oklch(0.985 0 0);
+  --color-sidebar-accent: oklch(0.217 0 0);
+  --color-sidebar-primary-foreground: oklch(0.985 0 0);
+  --color-sidebar-primary: oklch(0.488 0.243 264.376);
+  --color-sidebar-foreground: oklch(0.985 0 0);
+  --color-sidebar: oklch(0.13 0 0);
+  --color-chart-5: oklch(0.37 0.139 325.7);
+  --color-chart-4: oklch(0.55 0.163 302.7);
+  --color-chart-3: oklch(0.65 0.192 286);
+  --color-chart-2: oklch(0.6 0.118 184.7);
+  --color-chart-1: oklch(0.65 0.159 163);
+  --color-ring: oklch(0.708 0 0);
+  --color-input: oklch(0.217 0 0);
+  --color-border: oklch(0.217 0 0);
+  --color-destructive: oklch(0.577 0.245 27.3);
+  --color-accent-foreground: oklch(0.985 0 0);
+  --color-accent: oklch(0.217 0 0);
+  --color-secondary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.217 0 0);
+  --color-primary-foreground: oklch(0.985 0 0);
+  --color-primary: oklch(0.488 0.243 264.376);
+  --color-muted-foreground: oklch(0.556 0 0);
+  --color-muted: oklch(0.217 0 0);
+  --color-popover-foreground: oklch(0.985 0 0);
+  --color-popover: oklch(0.13 0 0);
+  --color-card-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.13 0 0);
+  --color-background: oklch(0.13 0 0);
+  --color-foreground: oklch(0.985 0 0);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+}
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+  }
+}
