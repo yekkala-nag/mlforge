@@ -31,10 +31,14 @@ export async function initPyodide(): Promise<void> {
 
   notifyStatus({ status: "loading", progress: 0, error: null });
 
-  pyodideWorker = new Worker(
-    new URL("./pyodide-worker.js", import.meta.url),
-    { type: "module" }
-  );
+  try {
+    pyodideWorker = new Worker(
+      new URL("./pyodide-worker.js", import.meta.url),
+      { type: "module" }
+    );
+  } catch {
+    pyodideWorker = new Worker("/pyodide-worker.js", { type: "module" });
+  }
 
   pyodideWorker.onmessage = (e: MessageEvent) => {
     const { type, id, result, error, progress, message } = e.data;

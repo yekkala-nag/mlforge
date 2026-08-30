@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { usePathname } from "next/navigation";
 
@@ -34,18 +33,16 @@ export function PlatformNav() {
         <Separator orientation="vertical" className="h-4 bg-zinc-700 shrink-0" />
         <nav className="flex items-center gap-0.5 overflow-x-auto min-w-0">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`text-xs whitespace-nowrap ${
-                  pathname === link.href
-                    ? "text-orange-400 bg-zinc-800"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Button>
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`inline-flex items-center justify-center rounded-lg px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-colors ${
+                pathname === link.href
+                  ? "text-orange-400 bg-zinc-800"
+                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              }`}
+            >
+              {link.label}
             </Link>
           ))}
         </nav>

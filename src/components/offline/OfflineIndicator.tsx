@@ -29,18 +29,13 @@ export function OfflineIndicator() {
   );
 
   useEffect(() => {
-    // Register service worker
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((reg) => {
-          // Check for updates periodically
-          const intervalId = setInterval(() => {
-            reg.update().catch(() => {});
-          }, 60 * 60 * 1000);
-          return () => clearInterval(intervalId);
-        })
-        .catch(() => {});
+    // Clean up any legacy service workers
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister().catch(() => {});
+        }
+      }).catch(() => {});
     }
   }, []);
 
