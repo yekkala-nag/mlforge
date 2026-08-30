@@ -7,9 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { from_scratch_algorithms } from "@/lib/from-scratch";
-import { Play, CheckCircle, XCircle, Lightbulb, Code2, BookOpen } from "lucide-react";
+import { Play, CheckCircle, XCircle, Code2, BookOpen } from "lucide-react";
 import { PyodideStatus } from "@/components/pyodide/PyodideStatus";
 
 interface ComparisonResult {
@@ -24,7 +23,7 @@ interface ComparisonResult {
 }
 
 export function FromScratchMode() {
-  const { isReady, run, loadPkgs, status, progress, message } = usePyodide();
+  const { isReady, run, loadPkgs } = usePyodide();
   const [selectedAlgo, setSelectedAlgo] = useState("linear-regression");
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -55,10 +54,19 @@ export function FromScratchMode() {
   }, [isReady, algo, run, ensureSklearn]);
 
   useEffect(() => {
+    let active = true;
     if (isReady && algo) {
-      runComparison();
+      const timer = setTimeout(() => {
+        if (active) {
+          void runComparison();
+        }
+      }, 0);
+      return () => {
+        active = false;
+        clearTimeout(timer);
+      };
     }
-  }, [isReady, selectedAlgo]);
+  }, [isReady, selectedAlgo, algo, runComparison]);
 
   return (
     <div className="space-y-6">

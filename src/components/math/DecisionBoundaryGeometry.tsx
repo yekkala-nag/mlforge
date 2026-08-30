@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import * as d3 from "d3";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 
 interface BoundaryProps {
   width?: number;
@@ -19,32 +19,32 @@ export function DecisionBoundaryGeometry({ width = 500, height = 500 }: Boundary
   const [degree, setDegree] = useState(2);
   const [gamma, setGamma] = useState(1.0);
   const [noise, setNoise] = useState(0.3);
-  const [showBoundary, setShowBoundary] = useState(true);
-  const [dataPoints, setDataPoints] = useState<{ x: number; y: number; c: number }[]>([]);
+  const [showBoundary] = useState(true);
 
-  // Generate data
-  useEffect(() => {
+  // Generate data deterministically or with pseudo-random seed per noise change
+  const dataPoints = useMemo(() => {
     const points: { x: number; y: number; c: number }[] = [];
     for (let i = 0; i < 60; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = 1.5 + Math.random() * noise;
+      const angle = (i / 60) * Math.PI * 2 + ((i * 17) % 10) * 0.05;
+      const r = 1.5 + (((i * 23) % 100) / 100) * noise;
       points.push({
-        x: Math.cos(angle) * r + (Math.random() - 0.5) * noise,
-        y: Math.sin(angle) * r + (Math.random() - 0.5) * noise,
+        x: Math.cos(angle) * r + ((((i * 31) % 100) / 100) - 0.5) * noise,
+        y: Math.sin(angle) * r + ((((i * 47) % 100) / 100) - 0.5) * noise,
         c: 0,
       });
     }
     for (let i = 0; i < 60; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = 0.5 + Math.random() * noise;
+      const angle = (i / 60) * Math.PI * 2 + ((i * 19) % 10) * 0.05;
+      const r = 0.5 + (((i * 29) % 100) / 100) * noise;
       points.push({
-        x: Math.cos(angle) * r + (Math.random() - 0.5) * noise,
-        y: Math.sin(angle) * r + (Math.random() - 0.5) * noise,
+        x: Math.cos(angle) * r + ((((i * 37) % 100) / 100) - 0.5) * noise,
+        y: Math.sin(angle) * r + ((((i * 53) % 100) / 100) - 0.5) * noise,
         c: 1,
       });
     }
-    setDataPoints(points);
+    return points;
   }, [noise]);
+
 
   // Draw
   useEffect(() => {
@@ -118,13 +118,15 @@ export function DecisionBoundaryGeometry({ width = 500, height = 500 }: Boundary
 
       contourGen(normalizedGrid).forEach((contour) => {
         ctx.beginPath();
-        d3.geoPath(
+        const path = d3.geoPath(
           d3.geoTransform({
             point: function (x, y) {
               this.stream.point(x * cellSize, y * cellSize);
             },
-          })
-        )(contour as any);
+          }),
+          ctx
+        );
+        path(contour as d3.GeoPermissibleObjects);
         ctx.strokeStyle = "#f97316";
         ctx.lineWidth = 2.5;
         ctx.stroke();

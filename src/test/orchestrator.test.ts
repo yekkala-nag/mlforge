@@ -10,7 +10,7 @@ function createMessage(
   return {
     id: `test-${Date.now()}`,
     from: "test",
-    to: to as any,
+    to,
     type: "request",
     topic,
     payload,

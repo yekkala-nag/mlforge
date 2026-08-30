@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class CodeMentorAgent extends BaseAgent {
   constructor() {
@@ -16,29 +16,28 @@ export class CodeMentorAgent extends BaseAgent {
       };
 
       const issues = this.findIssues(code, language);
-      const suggestions = this.generateSuggestions(code, language);
+      const suggestions = this.generateSuggestions(language);
 
       return this.createResponse(msg, "response", {
         score: Math.max(0, 100 - issues.length * 15),
         issues,
         suggestions,
-        praise: this.findPraise(code, language),
+        praise: this.findPraise(code),
       });
     });
 
     this.on("debug", async (msg) => {
-      const { code, error } = msg.payload as { code: string; error: string };
-      const diagnosis = this.diagnoseError(code, error);
+      const { error } = msg.payload as { error: string };
+      const diagnosis = this.diagnoseError(error);
 
       return this.createResponse(msg, "response", {
         diagnosis,
-        fix: this.suggestFix(code, error),
+        fix: this.suggestFix(error),
         explanation: `The error "${error}" typically occurs when...`,
       });
     });
 
     this.on("refactor", async (msg) => {
-      const { code } = msg.payload as { code: string };
       return this.createResponse(msg, "response", {
         suggestions: [
           "Consider using more descriptive variable names",
@@ -69,7 +68,7 @@ export class CodeMentorAgent extends BaseAgent {
     return issues;
   }
 
-  private generateSuggestions(code: string, language: string): string[] {
+  private generateSuggestions(language: string): string[] {
     const suggestions: string[] = [];
     if (language === "python") {
       suggestions.push("Add docstrings to explain function purpose");
@@ -78,7 +77,7 @@ export class CodeMentorAgent extends BaseAgent {
     return suggestions;
   }
 
-  private findPraise(code: string, language: string): string[] {
+  private findPraise(code: string): string[] {
     const praise: string[] = [];
     if (code.includes("# ")) praise.push("Good use of comments");
     if (code.includes("def ") && code.includes(":")) {
@@ -87,14 +86,14 @@ export class CodeMentorAgent extends BaseAgent {
     return praise;
   }
 
-  private diagnoseError(code: string, error: string): string {
+  private diagnoseError(error: string): string {
     if (error.includes("IndexError")) return "Array index out of bounds";
     if (error.includes("ValueError")) return "Invalid value passed to function";
     if (error.includes("KeyError")) return "Dictionary key not found";
     return "Check variable types and values";
   }
 
-  private suggestFix(code: string, error: string): string {
+  private suggestFix(error: string): string {
     if (error.includes("IndexError")) return "Add bounds checking before indexing";
     if (error.includes("ValueError")) return "Validate input before passing to function";
     return "Review the code around the error location";

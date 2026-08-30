@@ -16,11 +16,26 @@ export interface DatasetPoint {
 }
 
 export interface SimResult {
-  predictions: number[];
+  predictions?: number[];
+  points?: { x: number; y: number; predicted?: number; cluster?: number }[];
+  line?: { x: number; y: number }[] | { x1: number; y1: number; x2: number; y2: number }[];
+  decisionBoundary?: number[][];
+  centroids?: { x: number; y: number }[];
+  supportVectors?: { x: number; y: number }[];
+  lossHistory?: number[];
   metrics: Record<string, number>;
-  intermediate: Record<string, unknown>;
-  visualization: VisualizationData;
-  code: string;
+  intermediate?: {
+    weight?: number;
+    bias?: number;
+    weights?: number[];
+    k?: number;
+    C?: number;
+    kernel?: string;
+    [key: string]: unknown;
+  };
+  snapshots?: { step: number; loss: number; boundary: number[][]; grid_x: number[]; grid_y: number[] }[];
+  visualization?: VisualizationData;
+  code?: string;
 }
 
 export interface VisualizationData {

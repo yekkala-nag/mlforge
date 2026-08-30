@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { useSettingsStore, providerPresets } from "@/stores/settings-store";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User, AlertCircle } from "lucide-react";
 
 interface Message {

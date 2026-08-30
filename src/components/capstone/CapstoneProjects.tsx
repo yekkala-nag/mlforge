@@ -8,7 +8,6 @@ import {
   Rocket,
   CheckCircle,
   Lock,
-  Clock,
   BarChart3,
   Code2,
 } from "lucide-react";

@@ -120,7 +120,7 @@ interface SettingsState {
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       apiKey: "",
       providerId: "openai",
       apiBaseUrl: "",

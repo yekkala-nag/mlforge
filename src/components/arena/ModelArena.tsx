@@ -2,22 +2,19 @@
 
 import { useState, useCallback } from "react";
 import { usePyodide } from "@/hooks/usePyodide";
-import { ScatterPlot } from "@/components/playground/ScatterPlot";
-import { MetricsDisplay } from "@/components/playground/MetricsDisplay";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Swords, Trophy, TrendingUp, Timer, ArrowUpDown } from "lucide-react";
+import { Swords, Trophy, TrendingUp, Timer } from "lucide-react";
 
 interface ModelResult {
   name: string;
   metrics: Record<string, number>;
   accuracy?: number;
   latency: number;
-  points?: any[];
+  points?: { x: number; y: number; predicted?: number; cluster?: number }[];
   decisionBoundary?: number[][];
-  line?: any[];
+  line?: { x: number; y: number }[];
 }
 
 const algorithms = [
@@ -122,8 +119,10 @@ export function ModelArena() {
     if (!isReady) return;
     setIsRunning(true);
     try {
-      const data = await run<any[]>(evalCode, { params_json: "{}" });
-      setResults(data);
+      const data = await run<ModelResult[]>(evalCode, { params_json: "{}" });
+      if (data) {
+        setResults(data);
+      }
     } catch (err) {
       console.error("Arena error:", err);
     } finally {

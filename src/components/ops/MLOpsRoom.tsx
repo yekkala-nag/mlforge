@@ -354,9 +354,14 @@ function MetricCard({
 }) {
   return (
     <Card className="bg-zinc-900 border-zinc-800 p-3">
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-zinc-500">{icon}</span>
-        <span className="text-xs text-zinc-500">{label}</span>
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-500">{icon}</span>
+          <span className="text-xs text-zinc-500">{label}</span>
+        </div>
+        <span className={`text-[10px] ${trend === "up" ? "text-emerald-400" : trend === "down" ? "text-red-400" : "text-zinc-500"}`}>
+          {trend === "up" ? "↑" : trend === "down" ? "↓" : "→"}
+        </span>
       </div>
       <div className="text-lg font-mono font-bold text-zinc-200">{value}</div>
     </Card>

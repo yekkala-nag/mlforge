@@ -58,7 +58,7 @@ export function useSimulationRunner() {
           }
           const data = jsRunner(numParams);
           if (!abortRef.current) {
-            setResult(data as any);
+            setResult(data);
           }
           return;
         }
@@ -69,8 +69,8 @@ export function useSimulationRunner() {
             simulation.pythonCode,
             { params_json: currentParams, dataset_json: null }
           );
-          if (!abortRef.current) {
-            setResult(data as any);
+          if (!abortRef.current && data) {
+            setResult(data as unknown as SimulationResult);
           }
         }
       } catch (err) {

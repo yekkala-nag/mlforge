@@ -1,9 +1,6 @@
-"use client";
-
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Play,
   FlaskConical,
@@ -168,7 +165,7 @@ export function LearningMap() {
           Learning Worlds
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {worlds.map((world, i) => (
+          {worlds.map((world) => (
             <Link key={world.id} href={world.href}>
               <Card
                 className={`p-5 transition-all hover:scale-[1.02] cursor-pointer ${

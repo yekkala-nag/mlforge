@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { BarChart3, Info } from "lucide-react";
 
@@ -24,10 +23,9 @@ const presetFeatures: Feature[] = [
 
 export function FeatureImportanceExplainer() {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [features, setFeatures] = useState(presetFeatures);
+  const [features] = useState<Feature[]>(presetFeatures);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
   const [perturbation, setPerturbation] = useState(0);
-  const [showSHAP, setShowSHAP] = useState(false);
 
   // Normalize importance
   const total = features.reduce((s, f) => s + f.importance, 0);

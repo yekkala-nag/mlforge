@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ML Forge — Interactive Machine Learning Engineering Laboratory
 
-## Getting Started
+**ML Forge** is an interactive, browser-native machine learning laboratory designed to help engineers, students, and researchers understand, simulate, build, and deploy ML models from first principles to production systems.
 
-First, run the development server:
+---
+
+## Key Features
+
+- **Interactive Playground**: Real-time parameter tweaking and visual feedback for Linear Regression, Logistic Regression, KNN, Decision Trees, Random Forests, K-Means, SVM, Naive Bayes, Gradient Boosting, and Neural Networks.
+- **Visual Mathematics**: 3D & 2D gradient descent terrain surfaces and interactive decision boundary geometry powered by D3.js.
+- **From-Scratch Algorithm Studio**: Code implementations built from scratch with NumPy alongside scikit-learn comparisons.
+- **Multi-Agent Orchestration**: Specialized AI agents (Curriculum, Knowledge, Code Mentor, Simulation, Experiment, Challenge, Project, MLOps) providing contextual feedback, debugging, and automated project guidance.
+- **Production MLOps Room**: Real-time pipeline monitoring, data drift simulation, latency telemetry, and model health diagnostics.
+- **System Builder**: Drag-and-drop ML pipeline architect for designing ingestion, transformation, training, evaluation, and serving graphs.
+- **Hybrid Compute Engine**: Instant JavaScript execution for real-time visualization with background Pyodide Web Worker fallback for Python execution.
+- **Offline & PWA Ready**: Service worker caching and offline-first state persistence using `useSyncExternalStore`.
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router, Standalone Output)
+- **UI & Styling**: React 19, TailwindCSS 4, Lucide Icons, Shadcn UI
+- **Visualizations**: D3.js, Lucide
+- **Code Editor**: Monaco Editor (`@monaco-editor/react`)
+- **Python Execution**: Pyodide Web Worker (WASM)
+- **State Management**: Zustand with persistent storage
+- **Testing**: Vitest with JSDOM environment
+- **CI/CD & Container**: Docker multi-stage builds, GitHub Actions
+
+---
+
+## Quick Start (Local Development)
+
+### Prerequisites
+- Node.js 20+
+- npm 10+
+
+### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/yekkala-nag/mlforge.git
+cd mlforge
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production Deployment
 
-## Learn More
+### Docker Deployment
 
-To learn more about Next.js, take a look at the following resources:
+ML Forge is configured for multi-stage Docker standalone deployment:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Build Docker image
+docker build -t mlforge:latest .
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run Docker container
+docker run -p 3000:3000 mlforge:latest
+```
 
-## Deploy on Vercel
+The app will be available on `http://localhost:3000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Node.js Standalone Production Build
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Build standalone bundle
+npm run build
+
+# Start production server
+npm start
+```
+
+---
+
+## Quality Assurance & Testing
+
+```bash
+# Run ESLint validation (0 errors, 0 warnings)
+npm run lint
+
+# Run TypeScript static type checking
+npx tsc --noEmit
+
+# Run unit and integration tests with Vitest
+npm test
+
+# Run tests with coverage
+npx vitest run --coverage
+```
+
+---
+
+## Project Structure
+
+```
+mlforge/
+├── .github/workflows/ci.yml       # Automated CI pipeline
+├── public/                        # Static assets, manifests, icons
+├── src/
+│   ├── app/                       # Next.js App Router (pages, layouts, error boundaries)
+│   ├── components/                # Modular UI & interactive visualization components
+│   │   ├── agents/                # Multi-agent orchestrator interface
+│   │   ├── arena/                 # Model Arena head-to-head comparison
+│   │   ├── challenge/             # ML coding challenge engine
+│   │   ├── math/                  # Visual mathematics & loss geometry
+│   │   ├── ops/                   # MLOps monitoring room
+│   │   ├── playground/            # Algorithm playground & Code Studio
+│   │   └── system-builder/        # Pipeline graph builder
+│   ├── hooks/                     # Custom React hooks (usePyodide, useSimulationRunner)
+│   ├── lib/                       # Algorithms, agents, Pyodide worker, datasets
+│   ├── stores/                    # Zustand stores (playground, progress, settings)
+│   └── test/                      # Vitest test suites
+├── Dockerfile                     # Multi-stage production container
+├── next.config.ts                 # Security headers & standalone configuration
+├── vitest.config.ts               # Test runner configuration
+└── package.json
+```
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

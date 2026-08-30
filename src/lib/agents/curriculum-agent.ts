@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class CurriculumAgent extends BaseAgent {
   constructor() {
@@ -18,23 +18,23 @@ export class CurriculumAgent extends BaseAgent {
 
       const level =
         score > 80 ? "advanced" : score > 50 ? "intermediate" : "beginner";
-      const nextWorld = this.recommendNext(worldId, completedModules, level);
+      const nextWorld = this.recommendNext(worldId);
 
       return this.createResponse(msg, "response", {
         level,
         nextWorld,
-        reason: this.getReasoning(worldId, level, completedModules),
+        reason: this.getReasoning(level, completedModules),
         estimatedTime: level === "beginner" ? "2-3 hours" : "1-2 hours",
       });
     });
 
     this.on("generate-path", async (msg) => {
-      const { goal, currentLevel } = msg.payload as {
+      const { goal } = msg.payload as {
         goal: string;
         currentLevel: string;
       };
 
-      const path = this.generateLearningPath(goal, currentLevel);
+      const path = this.generateLearningPath(goal);
       return this.createResponse(msg, "response", { path });
     });
 
@@ -46,9 +46,7 @@ export class CurriculumAgent extends BaseAgent {
   }
 
   private recommendNext(
-    currentWorld: string,
-    completed: string[],
-    level: string
+    currentWorld: string
   ): string {
     const worldOrder = [
       "playground",
@@ -68,7 +66,6 @@ export class CurriculumAgent extends BaseAgent {
   }
 
   private getReasoning(
-    worldId: string,
     level: string,
     completed: string[]
   ): string {
@@ -81,7 +78,7 @@ export class CurriculumAgent extends BaseAgent {
     return `You're developing well. Consider exploring the next world to broaden your understanding.`;
   }
 
-  private generateLearningPath(goal: string, level: string) {
+  private generateLearningPath(goal: string) {
     const paths: Record<string, string[]> = {
       "understand-basics": ["playground", "math", "from-scratch"],
       "build-models": ["playground", "datasets", "challenges", "arena"],

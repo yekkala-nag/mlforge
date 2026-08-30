@@ -1,0 +1,20 @@
+{
+  "/(platform)/agents/page": "app/(platform)/agents/page.js",
+  "/(platform)/arena/page": "app/(platform)/arena/page.js",
+  "/(platform)/capstone/page": "app/(platform)/capstone/page.js",
+  "/(platform)/challenges/page": "app/(platform)/challenges/page.js",
+  "/(platform)/datasets/page": "app/(platform)/datasets/page.js",
+  "/(platform)/features/page": "app/(platform)/features/page.js",
+  "/(platform)/from-scratch/page": "app/(platform)/from-scratch/page.js",
+  "/(platform)/labs/page": "app/(platform)/labs/page.js",
+  "/(platform)/learn/page": "app/(platform)/learn/page.js",
+  "/(platform)/math/page": "app/(platform)/math/page.js",
+  "/(platform)/ops/page": "app/(platform)/ops/page.js",
+  "/(platform)/playground/page": "app/(platform)/playground/page.js",
+  "/(platform)/settings/page": "app/(platform)/settings/page.js",
+  "/(platform)/system-builder/page": "app/(platform)/system-builder/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}

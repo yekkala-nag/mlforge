@@ -5,17 +5,11 @@ import { usePyodide } from "@/hooks/usePyodide";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
 import {
   Zap,
   Trophy,
-  Clock,
   Target,
-  AlertTriangle,
   CheckCircle,
-  Lock,
-  ArrowRight,
 } from "lucide-react";
 
 interface Challenge {
@@ -309,11 +303,20 @@ const difficultyColors: Record<string, string> = {
   expert: "bg-red-900/50 text-red-400",
 };
 
+interface ChallengeResult {
+  completed?: boolean;
+  accuracy?: number;
+  f1_score?: number;
+  latency_ms?: number;
+  error?: string;
+  [key: string]: unknown;
+}
+
 export function ChallengeEngine() {
   const { isReady, run } = usePyodide();
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [code, setCode] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ChallengeResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [showSolution, setShowSolution] = useState(false);
@@ -331,7 +334,7 @@ export function ChallengeEngine() {
     if (!isReady || !selectedChallenge) return;
     setIsRunning(true);
     try {
-      const data = await run<any>(code);
+      const data = await run<ChallengeResult>(code);
       setResult(data);
       if (data?.completed) {
         setCompleted((prev) => new Set([...prev, selectedChallenge.id]));
@@ -345,7 +348,8 @@ export function ChallengeEngine() {
 
   const score = selectedChallenge
     ? selectedChallenge.scoringCriteria.reduce((sum, c) => {
-        const val = result?.[c.metric] ?? 0;
+        const rawVal = result?.[c.metric];
+        const val = typeof rawVal === "number" ? rawVal : 0;
         const normalized = c.metric === "latency_ms"
           ? Math.max(0, 1 - val / c.target)
           : Math.min(1, val / c.target);

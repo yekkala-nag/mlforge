@@ -3,6 +3,7 @@
 import { usePlaygroundStore } from "@/stores/playground-store";
 import { useSimulationRunner } from "@/hooks/useSimulationRunner";
 import { usePyodide } from "@/hooks/usePyodide";
+import type { SimResult } from "@/lib/types/simulation";
 import { ScatterPlot } from "./ScatterPlot";
 import { LossChart } from "./LossChart";
 import { MetricsDisplay } from "./MetricsDisplay";
@@ -57,10 +58,12 @@ export function SimulationRunner() {
     setShowAnimator(true);
 
     try {
-      const data = await run<any>(activeSimulation.pythonCode, {
+      const data = await run<SimResult>(activeSimulation.pythonCode, {
         params_json: animParams,
       });
-      setResult(data);
+      if (data) {
+        setResult(data);
+      }
     } catch (err) {
       console.error("Animation error:", err);
     } finally {
@@ -204,12 +207,12 @@ export function SimulationRunner() {
 
       {/* Center: Visualization */}
       <div className="flex-1 space-y-4 min-w-0">
-        {showAnimator && (result as any)?.snapshots ? (
+        {showAnimator && result?.snapshots ? (
           <TrainingAnimator
-            points={(result as any).points ?? []}
-            snapshots={(result as any).snapshots}
-            lossHistory={(result as any).lossHistory ?? []}
-            metrics={(result as any).metrics ?? {}}
+            points={result.points ?? []}
+            snapshots={result.snapshots}
+            lossHistory={result.lossHistory ?? []}
+            metrics={result.metrics ?? {}}
             isRegression={activeSimulation?.id === "linear-regression"}
           />
         ) : (
@@ -217,11 +220,11 @@ export function SimulationRunner() {
             <Card className="bg-zinc-900 border-zinc-800 p-4">
               {result ? (
                 <ScatterPlot
-                  points={(result as any).points ?? []}
-                  line={(result as any).line}
-                  centroids={(result as any).centroids}
-                  supportVectors={(result as any).supportVectors}
-                  decisionBoundary={(result as any).decisionBoundary}
+                  points={result.points ?? []}
+                  line={result.line as { x: number; y: number }[] | undefined}
+                  centroids={result.centroids}
+                  supportVectors={result.supportVectors}
+                  decisionBoundary={result.decisionBoundary}
                   showRegressionLine={activeSimulation?.id === "linear-regression"}
                   showDecisionBoundary={
                     activeSimulation?.id !== "linear-regression" &&
@@ -237,10 +240,10 @@ export function SimulationRunner() {
 
             {result && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(result as any).lossHistory?.length > 0 && (
+                {result.lossHistory && result.lossHistory.length > 0 && (
                   <Card className="bg-zinc-900 border-zinc-800 p-4">
                     <LossChart
-                      data={(result as any).lossHistory}
+                      data={result.lossHistory}
                       width={350}
                       height={150}
                       label={
@@ -251,7 +254,7 @@ export function SimulationRunner() {
                   </Card>
                 )}
                 <Card className="bg-zinc-900 border-zinc-800 p-4">
-                  <MetricsDisplay metrics={(result as any).metrics ?? {}} />
+                  <MetricsDisplay metrics={result.metrics ?? {}} />
                 </Card>
               </div>
             )}
@@ -260,7 +263,7 @@ export function SimulationRunner() {
       </div>
 
       {/* Right: Intermediate */}
-      {result && (result as any).intermediate && (
+      {result && result.intermediate && (
         <div className="w-full lg:w-64 shrink-0">
           <Card className="bg-zinc-900 border-zinc-800 p-4 space-y-3">
             <h3 className="text-sm font-semibold text-zinc-200">
@@ -273,21 +276,21 @@ export function SimulationRunner() {
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Weight (w)</span>
                     <span className="font-mono text-zinc-300">
-                      {(result as any).intermediate?.weight?.toFixed(4)}
+                      {typeof result.intermediate.weight === "number" ? result.intermediate.weight.toFixed(4) : "—"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Bias (b)</span>
                     <span className="font-mono text-zinc-300">
-                      {(result as any).intermediate?.bias?.toFixed(4)}
+                      {typeof result.intermediate.bias === "number" ? result.intermediate.bias.toFixed(4) : "—"}
                     </span>
                   </div>
                   <Separator className="bg-zinc-800" />
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Equation</span>
                     <span className="font-mono text-amber-400 text-xs">
-                      y = {(result as any).intermediate?.weight?.toFixed(2)}x +{" "}
-                      {(result as any).intermediate?.bias?.toFixed(2)}
+                      y = {typeof result.intermediate.weight === "number" ? result.intermediate.weight.toFixed(2) : 0}x +{" "}
+                      {typeof result.intermediate.bias === "number" ? result.intermediate.bias.toFixed(2) : 0}
                     </span>
                   </div>
                 </>
@@ -296,12 +299,12 @@ export function SimulationRunner() {
                 <div className="flex justify-between">
                   <span className="text-zinc-500">K</span>
                   <span className="font-mono text-zinc-300">
-                    {(result as any).intermediate?.k}
+                    {String(result.intermediate.k ?? "—")}
                   </span>
                 </div>
               )}
               {activeSimulation?.id === "kmeans" &&
-                (result as any).centroids?.map((c: any, i: number) => (
+                result.centroids?.map((c: { x: number; y: number }, i: number) => (
                   <div key={i} className="flex justify-between">
                     <span className="text-zinc-500">Centroid {i + 1}</span>
                     <span className="font-mono text-zinc-300 text-xs">
@@ -314,13 +317,13 @@ export function SimulationRunner() {
                   <div className="flex justify-between">
                     <span className="text-zinc-500">C</span>
                     <span className="font-mono text-zinc-300">
-                      {(result as any).intermediate?.C}
+                      {String(result.intermediate.C ?? "—")}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Kernel</span>
                     <span className="font-mono text-zinc-300">
-                      {(result as any).intermediate?.kernel}
+                      {String(result.intermediate.kernel ?? "—")}
                     </span>
                   </div>
                 </>
@@ -330,13 +333,13 @@ export function SimulationRunner() {
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Weights</span>
                     <span className="font-mono text-zinc-300 text-xs">
-                      [{(result as any).intermediate?.weights?.map((w: number) => w.toFixed(2)).join(", ")}]
+                      [{Array.isArray(result.intermediate.weights) ? result.intermediate.weights.map((w: number) => w.toFixed(2)).join(", ") : "—"}]
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Bias</span>
                     <span className="font-mono text-zinc-300">
-                      {(result as any).intermediate?.bias?.toFixed(4)}
+                      {typeof result.intermediate.bias === "number" ? result.intermediate.bias.toFixed(4) : "—"}
                     </span>
                   </div>
                 </>

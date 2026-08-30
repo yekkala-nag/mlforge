@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class ChallengeAgent extends BaseAgent {
   private activeChallenges: Map<string, Record<string, unknown>> = new Map();
@@ -12,14 +12,14 @@ export class ChallengeAgent extends BaseAgent {
     );
 
     this.on("score", async (msg) => {
-      const { challengeId, code, metrics } = msg.payload as {
+      const { challengeId, metrics } = msg.payload as {
         challengeId: string;
-        code: string;
+        code?: string;
         metrics: Record<string, number>;
       };
 
       const score = this.calculateScore(metrics);
-      const feedback = this.generateFeedback(score, metrics);
+      const feedback = this.generateFeedback(score);
 
       this.activeChallenges.set(challengeId, {
         lastScore: score,
@@ -75,8 +75,7 @@ export class ChallengeAgent extends BaseAgent {
   }
 
   private generateFeedback(
-    score: number,
-    metrics: Record<string, number>
+    score: number
   ): string {
     if (score >= 90) return "Excellent! Outstanding performance.";
     if (score >= 70) return "Good work! Meeting the requirements.";

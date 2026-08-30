@@ -19,7 +19,6 @@ export function CodeStudio() {
     setParam,
     result,
     isRunning,
-    resetParams,
   } = usePlaygroundStore();
   const { runSimulation, isReady } = useSimulationRunner();
   const [editedCode, setEditedCode] = useState<string | null>(null);
@@ -101,17 +100,17 @@ export function CodeStudio() {
               {result ? (
                 <div className="space-y-4">
                   <ScatterPlot
-                    points={(result as any).points ?? []}
-                    line={(result as any).line}
-                    centroids={(result as any).centroids}
-                    decisionBoundary={(result as any).decisionBoundary}
+                    points={result.points ?? []}
+                    line={result.line as { x: number; y: number }[] | undefined}
+                    centroids={result.centroids}
+                    decisionBoundary={result.decisionBoundary}
                     showRegressionLine={activeSimulation?.id === "linear-regression"}
                     showDecisionBoundary={
                       activeSimulation?.id !== "linear-regression" &&
                       activeSimulation?.id !== "kmeans"
                     }
                   />
-                  <MetricsDisplay metrics={(result as any).metrics ?? {}} />
+                  <MetricsDisplay metrics={result.metrics ?? {}} />
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64 text-zinc-600 text-sm">

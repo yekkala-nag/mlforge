@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class MLOpsAgent extends BaseAgent {
   constructor() {

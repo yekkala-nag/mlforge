@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class SimulationAgent extends BaseAgent {
   constructor() {
@@ -30,13 +30,13 @@ export class SimulationAgent extends BaseAgent {
     });
 
     this.on("explain-behavior", async (msg) => {
-      const { algorithm, params, results } = msg.payload as {
+      const { algorithm } = msg.payload as {
         algorithm: string;
-        params: Record<string, unknown>;
-        results: Record<string, unknown>;
+        params?: Record<string, unknown>;
+        results?: Record<string, unknown>;
       };
 
-      const explanation = this.explainBehavior(algorithm, params, results);
+      const explanation = this.explainBehavior(algorithm);
       return this.createResponse(msg, "response", { explanation });
     });
 
@@ -82,9 +82,7 @@ export class SimulationAgent extends BaseAgent {
   }
 
   private explainBehavior(
-    algorithm: string,
-    params: Record<string, unknown>,
-    results: Record<string, unknown>
+    algorithm: string
   ): string {
     const explanations: Record<string, string> = {
       "linear-regression":

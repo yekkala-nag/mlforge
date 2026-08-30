@@ -8,7 +8,7 @@ import { AIMentor } from "@/components/ai-mentor/AIMentor";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Code2, ChevronDown } from "lucide-react";
+import { Code2, ChevronDown } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { CodeStudio } from "@/components/playground/CodeStudio";
 import { GuidedTutorial } from "@/components/playground/GuidedTutorial";
@@ -183,7 +183,7 @@ export default function PlaygroundPage() {
             context={{
               simulationId: activeSimulation?.id,
               params: params as Record<string, unknown>,
-              metrics: (result as any)?.metrics,
+              metrics: result?.metrics,
             }}
           />
         </aside>

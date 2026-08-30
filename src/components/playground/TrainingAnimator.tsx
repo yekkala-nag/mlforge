@@ -22,7 +22,7 @@ interface TrainingAnimatorProps {
   points: { x: number; y: number; predicted?: number; cluster?: number }[];
   snapshots: Snapshot[];
   lossHistory: number[];
-  metrics: Record<string, number>;
+  metrics?: Record<string, number>;
   isRegression?: boolean;
 }
 
@@ -30,7 +30,6 @@ export function TrainingAnimator({
   points,
   snapshots,
   lossHistory,
-  metrics,
   isRegression = true,
 }: TrainingAnimatorProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -55,6 +54,7 @@ export function TrainingAnimator({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, totalSteps, speed]);
 
   const play = useCallback(() => {
@@ -86,7 +86,6 @@ export function TrainingAnimator({
   if (!snapshots || snapshots.length === 0) return null;
 
   const snapshot = snapshots[currentStep];
-  const progress = totalSteps > 1 ? (currentStep / (totalSteps - 1)) * 100 : 100;
 
   return (
     <div className="space-y-4">

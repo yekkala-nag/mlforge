@@ -6,13 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Play,
   Pause,
   RotateCcw,
   TrendingDown,
-  Target,
   Zap,
 } from "lucide-react";
 
@@ -160,11 +158,15 @@ export function GradientDescentVisualizer() {
 
     contourGen(normalizedLosses).forEach((contour) => {
       ctx.beginPath();
-      d3.geoPath(d3.geoTransform({
-        point: function (x, y) {
-          this.stream.point(x * cellSize, y * cellSize);
-        },
-      }))(contour as any);
+      const contourPath = d3.geoPath(
+        d3.geoTransform({
+          point: function (x, y) {
+            this.stream.point(x * cellSize, y * cellSize);
+          },
+        }),
+        ctx
+      );
+      contourPath(contour as d3.GeoPermissibleObjects);
       ctx.strokeStyle = "rgba(255,255,255,0.15)";
       ctx.lineWidth = 0.5;
       ctx.stroke();
@@ -244,6 +246,7 @@ export function GradientDescentVisualizer() {
     return () => {
       if (animRef.current) clearInterval(animRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, path.length, speed]);
 
   const start = useCallback(() => {

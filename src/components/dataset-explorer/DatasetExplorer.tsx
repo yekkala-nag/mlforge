@@ -6,15 +6,11 @@ import * as d3 from "d3";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Database,
-  Upload,
   BarChart3,
   ScatterChart,
   AlertTriangle,
-  CheckCircle,
 } from "lucide-react";
 
 interface ColumnInfo {
@@ -35,6 +31,13 @@ interface DatasetStats {
   columnInfo: ColumnInfo[];
   correlationMatrix?: number[][];
   missingTotal: number;
+}
+
+interface RawDataset {
+  X: number[][];
+  y: number[];
+  columns: string[];
+  target_names?: string[];
 }
 
 const SAMPLE_DATASETS = [
@@ -72,7 +75,7 @@ json.dumps({"X": X, "y": y, "columns": cols, "target_names": bc.target_names.tol
 
 export function DatasetExplorer() {
   const { isReady, run } = usePyodide();
-  const [dataset, setDataset] = useState<any>(null);
+  const [dataset, setDataset] = useState<RawDataset | null>(null);
   const [stats, setStats] = useState<DatasetStats | null>(null);
   const [selectedCol, setSelectedCol] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +88,8 @@ export function DatasetExplorer() {
       if (!isReady) return;
       setIsLoading(true);
       try {
-        const data = await run<any>(SAMPLE_DATASETS[index].code);
+        const data = await run<RawDataset>(SAMPLE_DATASETS[index].code);
+        if (!data) return;
         setDataset(data);
 
         // Compute stats

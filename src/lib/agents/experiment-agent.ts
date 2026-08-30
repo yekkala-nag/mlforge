@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class ExperimentAgent extends BaseAgent {
   private experiments: Map<string, Record<string, unknown>> = new Map();

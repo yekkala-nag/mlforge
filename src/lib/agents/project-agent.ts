@@ -1,4 +1,4 @@
-import { BaseAgent, AgentMessage } from "./base-agent";
+import { BaseAgent } from "./base-agent";
 
 export class ProjectAgent extends BaseAgent {
   constructor() {
@@ -10,8 +10,8 @@ export class ProjectAgent extends BaseAgent {
     );
 
     this.on("validate", async (msg) => {
-      const { projectId, deliverables } = msg.payload as {
-        projectId: string;
+      const { deliverables } = msg.payload as {
+        projectId?: string;
         deliverables: string[];
       };
 
@@ -38,12 +38,12 @@ export class ProjectAgent extends BaseAgent {
     });
 
     this.on("suggest-approach", async (msg) => {
-      const { projectType, constraints } = msg.payload as {
+      const { projectType } = msg.payload as {
         projectType: string;
-        constraints: string[];
+        constraints?: string[];
       };
 
-      const approaches = this.recommendApproach(projectType, constraints);
+      const approaches = this.recommendApproach(projectType);
       return this.createResponse(msg, "response", { approaches });
     });
 
@@ -66,7 +66,7 @@ export class ProjectAgent extends BaseAgent {
     });
   }
 
-  private recommendApproach(projectType: string, constraints: string[]) {
+  private recommendApproach(projectType: string) {
     const approaches: Record<string, string[]> = {
       "house-price": [
         "Start with data exploration to understand feature distributions",

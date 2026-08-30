@@ -9,6 +9,7 @@ export interface SimulationResult {
   line?: { x: number; y: number }[];
   decisionBoundary?: number[][];
   centroids?: { x: number; y: number }[];
+  supportVectors?: { x: number; y: number }[];
   lossHistory: number[];
   metrics: Record<string, number>;
   intermediate?: Record<string, unknown>;
@@ -103,8 +104,8 @@ export function runLogisticRegression(params: Record<string, number>): Simulatio
   const X: [number, number][] = [];
   const y: number[] = [];
   const n1 = Math.floor(n / 2);
-  for (let i = 0; i < n1; i++) { X.push([randn() * 0.5 + 2, randn() * 0.5 + 2]); y.push(1); }
-  for (let i = n1; i < n; i++) { X.push([randn() * 0.5 - 2, randn() * 0.5 - 2]); y.push(0); }
+  for (let i = 0; i < n1; i++) { X.push([randn() * (0.5 + noise * 0.5) + 2, randn() * (0.5 + noise * 0.5) + 2]); y.push(1); }
+  for (let i = n1; i < n; i++) { X.push([randn() * (0.5 + noise * 0.5) - 2, randn() * (0.5 + noise * 0.5) - 2]); y.push(0); }
 
   const xm = [X.reduce((a, p) => a + p[0], 0) / n, X.reduce((a, p) => a + p[1], 0) / n];
   const xs = [Math.sqrt(X.reduce((a, p) => a + (p[0] - xm[0]) ** 2, 0) / n) + 1e-8,
@@ -221,9 +222,9 @@ export function runDecisionTree(params: Record<string, number>): SimulationResul
       return () => counts.indexOf(Math.max(...counts));
     }
 
-    const leftX = Xs.filter((x, i) => x[bestFeat] <= bestThr);
+    const leftX = Xs.filter((x) => x[bestFeat] <= bestThr);
     const leftY = ys.filter((_, i) => Xs[i][bestFeat] <= bestThr);
-    const rightX = Xs.filter((x, i) => x[bestFeat] > bestThr);
+    const rightX = Xs.filter((x) => x[bestFeat] > bestThr);
     const rightY = ys.filter((_, i) => Xs[i][bestFeat] > bestThr);
 
     const leftFn = buildTree(leftX, leftY, depth + 1);
@@ -643,9 +644,9 @@ function buildSmallTree(X: [number, number][], y: number[], depth: number): (x: 
 
   if (bestGini === Infinity) return () => pred;
 
-  const leftX = X.filter((x, i) => x[bestFeat] <= bestThr);
+  const leftX = X.filter((x) => x[bestFeat] <= bestThr);
   const leftY = y.filter((_, i) => X[i][bestFeat] <= bestThr);
-  const rightX = X.filter((x, i) => x[bestFeat] > bestThr);
+  const rightX = X.filter((x) => x[bestFeat] > bestThr);
   const rightY = y.filter((_, i) => X[i][bestFeat] > bestThr);
 
   const leftFn = buildSmallTree(leftX, leftY, depth - 1);

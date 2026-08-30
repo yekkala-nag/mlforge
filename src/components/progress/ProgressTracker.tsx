@@ -8,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 import { useProgressStore } from "@/stores/progress-store";
 import {
   Trophy,
-  Clock,
   Download,
   Upload,
   RotateCcw,

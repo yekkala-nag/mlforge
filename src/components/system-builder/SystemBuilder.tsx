@@ -1,22 +1,20 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Database,
   Cpu,
   BarChart3,
   Rocket,
   Settings,
-  ArrowRight,
   Trash2,
   Play,
   CheckCircle,
   AlertCircle,
   GripVertical,
+  ArrowRight,
 } from "lucide-react";
 
 interface PipelineNode {
@@ -76,6 +74,8 @@ const nodeTypes = [
 
 export function SystemBuilder() {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const nodeCounterRef = useRef(0);
+  const connCounterRef = useRef(0);
   const [nodes, setNodes] = useState<PipelineNode[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -88,23 +88,25 @@ export function SystemBuilder() {
     const nodeType = nodeTypes.find((n) => n.type === type);
     if (!nodeType) return;
 
+    nodeCounterRef.current += 1;
+    const offsetIndex = nodeCounterRef.current;
     const newNode: PipelineNode = {
-      id: `node-${Date.now()}`,
+      id: `node-${offsetIndex}`,
       type,
       label: nodeType.label,
       icon: nodeType.icon,
-      x: 200 + Math.random() * 200,
-      y: 100 + Math.random() * 200,
+      x: 200 + ((offsetIndex * 40) % 200),
+      y: 100 + ((offsetIndex * 35) % 200),
       config: { ...nodeType.config },
       status: "idle",
     };
 
-    setNodes([...nodes, newNode]);
+    setNodes((prev) => [...prev, newNode]);
   };
 
   const removeNode = (id: string) => {
-    setNodes(nodes.filter((n) => n.id !== id));
-    setConnections(connections.filter((c) => c.from !== id && c.to !== id));
+    setNodes((prev) => prev.filter((n) => n.id !== id));
+    setConnections((prev) => prev.filter((c) => c.from !== id && c.to !== id));
     if (selectedNode === id) setSelectedNode(null);
   };
 
@@ -118,10 +120,13 @@ export function SystemBuilder() {
         (c) => c.from === connecting && c.to === nodeId
       );
       if (!exists) {
-        setConnections([
-          ...connections,
-          { id: `conn-${Date.now()}`, from: connecting, to: nodeId },
-        ]);
+        connCounterRef.current += 1;
+        const newConn: Connection = {
+          id: `conn-${connCounterRef.current}`,
+          from: connecting,
+          to: nodeId,
+        };
+        setConnections((prev) => [...prev, newConn]);
       }
     }
     setConnecting(null);

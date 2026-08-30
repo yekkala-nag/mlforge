@@ -1,41 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { useEffect, useSyncExternalStore } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Wifi, WifiOff, Download, RefreshCw } from "lucide-react";
+import { Wifi, WifiOff } from "lucide-react";
+
+function subscribeOnline(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getOnlineSnapshot() {
+  return navigator.onLine;
+}
+
+function getServerOnlineSnapshot() {
+  return true;
+}
 
 export function OfflineIndicator() {
-  const [isOnline, setIsOnline] = useState(true);
-  const [isOfflineReady, setIsOfflineReady] = useState(false);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const isOnline = useSyncExternalStore(
+    subscribeOnline,
+    getOnlineSnapshot,
+    getServerOnlineSnapshot
+  );
 
   useEffect(() => {
-    setIsOnline(navigator.onLine);
-
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-
     // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
         .then((reg) => {
-          setIsOfflineReady(true);
           // Check for updates periodically
-          setInterval(() => reg.update(), 60 * 60 * 1000);
+          const intervalId = setInterval(() => {
+            reg.update().catch(() => {});
+          }, 60 * 60 * 1000);
+          return () => clearInterval(intervalId);
         })
         .catch(() => {});
     }
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
   }, []);
 
   return (
@@ -69,3 +75,4 @@ export function OfflineIndicator() {
     </>
   );
 }
+

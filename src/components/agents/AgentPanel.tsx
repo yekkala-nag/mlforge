@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { orchestrator, AgentType } from "@/lib/agents/orchestrator";
+import { orchestrator } from "@/lib/agents/orchestrator";
 import { AgentState, AgentMessage } from "@/lib/agents/base-agent";
 import {
   Users,
@@ -45,21 +44,15 @@ const agentColors: Record<string, string> = {
 };
 
 export function AgentPanel() {
-  const [agents, setAgents] = useState<AgentState[]>([]);
-  const [messages, setMessages] = useState<AgentMessage[]>([]);
+  const [agents, setAgents] = useState<AgentState[]>(() => orchestrator.getAllAgents());
+  const [messages, setMessages] = useState<AgentMessage[]>(() => orchestrator.getRecentMessages());
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
-  const [testMessage, setTestMessage] = useState("");
   const [testTopic, setTestTopic] = useState("explain");
   const [testPayload, setTestPayload] = useState('{"concept": "linear-regression"}');
   const [isSending, setIsSending] = useState(false);
 
-  useEffect(() => {
-    setAgents(orchestrator.getAllAgents());
-    setMessages(orchestrator.getRecentMessages());
-  }, []);
-
   const sendTestMessage = async () => {
-    if (!selectedAgent || !testMessage) return;
+    if (!selectedAgent || !testPayload) return;
     setIsSending(true);
 
     try {
@@ -74,7 +67,7 @@ export function AgentPanel() {
         timestamp: Date.now(),
       };
 
-      const response = await orchestrator.send(message);
+      await orchestrator.send(message);
       setMessages(orchestrator.getRecentMessages());
       setAgents(orchestrator.getAllAgents());
     } catch (err) {
