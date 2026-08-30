@@ -34,9 +34,6 @@ export const metadata: Metadata = {
   creator: "ML Forge",
   publisher: "ML Forge",
   manifest: "/manifest.json",
-  icons: {
-    icon: "/favicon.ico",
-  },
   openGraph: {
     title: "ML Forge — Interactive ML Engineering Laboratory",
     description:
