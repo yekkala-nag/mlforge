@@ -1,3 +1,0 @@
-module.exports=[2747,a=>{"use strict";var b=a.i(7997);a.s(["default",0,function(){return(0,b.jsxs)("div",{className:"min-h-[50vh] flex flex-col items-center justify-center space-y-4 p-8",children:[(0,b.jsxs)("div",{className:"relative w-12 h-12",children:[(0,b.jsx)("div",{className:"absolute inset-0 rounded-full border-2 border-orange-500/20"}),(0,b.jsx)("div",{className:"absolute inset-0 rounded-full border-2 border-orange-500 border-t-transparent animate-spin"})]}),(0,b.jsx)("p",{className:"text-xs font-mono text-zinc-500 tracking-wider uppercase animate-pulse",children:"Loading MLForge Engine..."})]})}])},25210,function(a){a.n(a.i(2747))}];
-
-//# sourceMappingURL=src_app_loading_tsx_01g_-m0._.js.map

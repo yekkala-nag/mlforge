@@ -15,6 +15,7 @@ COPY . .
 
 # Next.js telemetry disable during build
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_OUTPUT_STANDALONE=1
 ENV NODE_ENV=production
 
 RUN npm run build
