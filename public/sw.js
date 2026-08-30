@@ -20,7 +20,15 @@ const PRECACHE_URLS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(PRECACHE_URLS))
+    caches.open(STATIC_CACHE).then((cache) => {
+      return Promise.allSettled(
+        PRECACHE_URLS.map((url) =>
+          cache.add(url).catch(() => {
+            // Silently ignore individual route precache misses during first install
+          })
+        )
+      );
+    })
   );
   self.skipWaiting();
 });
